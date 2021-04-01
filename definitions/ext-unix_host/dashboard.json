@@ -1,14 +1,14 @@
 {
-  "name": "Tinyproxy",
+  "name": "Unix Host status",
   "description": null,
   "pages": [
     {
-      "name": "Tinyproxy",
+      "name": "Unix Host status",
       "description": null,
       "widgets": [
         {
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "layout": {
             "column": 1,
@@ -16,20 +16,28 @@
             "height": 3,
             "width": 4
           },
-          "title": "Proxy requests",
+          "title": "CPU Utilization (%)",
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "cpu.idle",
+                "precision": null,
+                "type": "humanized"
+              }
+            ],
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(tinyproxy_requests_total) FROM Metric facet targetName  SINCE 30 MINUTES AGO TIMESERIES"
+                "query": "SELECT 100-latest(cpu.idle) FROM `unixMonitor:Stats` "
               }
-            ]
+            ],
+            "thresholds": []
           },
           "linkedEntityGuids": null
         },
         {
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "layout": {
             "column": 5,
@@ -37,20 +45,22 @@
             "height": 3,
             "width": 4
           },
-          "title": "Connections opened per second",
+          "title": "Memory Utilization (%)",
           "rawConfiguration": {
+            "dataFormatters": [],
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(max(tinyproxy_connections_open)-min(tinyproxy_connections_open), 1 second) FROM Metric TIMESERIES"
+                "query": "SELECT (latest(memory.total) - latest(memory.free))/latest(memory.total) * 100 FROM `unixMonitor:Stats` "
               }
-            ]
+            ],
+            "thresholds": []
           },
           "linkedEntityGuids": null
         },
         {
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "layout": {
             "column": 9,
@@ -58,14 +68,16 @@
             "height": 3,
             "width": 4
           },
-          "title": "Bad connections",
+          "title": "Disk Utilization (%)",
           "rawConfiguration": {
+            "dataFormatters": [],
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(tinyproxy_connections_bad_total) FROM Metric facet targetName  SINCE 30 MINUTES AGO TIMESERIES"
+                "query": "SELECT max(percentUsed) FROM `unixMonitor:Disk` FACET mountedOn"
               }
-            ]
+            ],
+            "thresholds": []
           },
           "linkedEntityGuids": null
         }

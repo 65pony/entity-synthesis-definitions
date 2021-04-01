@@ -7,6 +7,10 @@ synthesis:
   - attribute: eventType
     prefix: "unixMonitor:"
 
+dashboardTemplates:
+  newRelic:
+    template: dashboard.json
+
 compositeMetrics:
   goldenMetrics:
     - golden_metrics.yml
